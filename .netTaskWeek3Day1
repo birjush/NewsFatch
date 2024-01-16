@@ -1,0 +1,25 @@
+ [HttpPost]
+ public IActionResult Login(Employee model)
+ {
+     var user = db.emps.FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
+
+     if (user != null)
+     {
+         HttpContext.Session.SetString("Email", model.Email);
+         SaveSessionToFile(user.Email);
+         return RedirectToAction("Index");
+     }
+     else
+     {
+         ModelState.AddModelError(string.Empty, "Invalid username or password");
+     }
+
+     return RedirectToAction("index");
+ }
+ private void SaveSessionToFile(string email)
+ {
+     // Save session to a text file
+     string sessionFilePath = @"C:\\Users\\BIRJU\\source\\repos\\Auth_saveInFileSession\\Auth_saveInFileSession\\NewFolder\\TextFile.txt";
+     var filePath = Path.Combine(Directory.GetCurrentDirectory(), sessionFilePath);
+     System.IO.File.WriteAllText(filePath, "Logged In : "+email);
+ }
